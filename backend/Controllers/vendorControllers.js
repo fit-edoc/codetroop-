@@ -105,6 +105,39 @@ const nearbySellers = async (req, res) => {
   }
 };
 
+const addToCart = async (req, res) => {
+  const { productId, quantity } = req.body;
+
+  if (!productId || !quantity) {
+    return res.status(400).json({ message: "Product ID and quantity are required" });
+  }
+
+  try {
+    const vendor = req.vendor;
+    if (!vendor) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const cart = vendor.cart || [];
+    const existingItem = cart.find(item => item.productId.toString() === productId);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({ productId, quantity });
+    }
+    vendor.cart = cart;
+    await vendor.save();
+
+    return res.status(200).json({
+      message: "Product added to cart successfully",
+      productId,
+      quantity,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to add product to cart" });
+  }
+};  
+
 const logoutVendor = (req, res) => {
   try {
     res.clearCookie("token", {
@@ -123,5 +156,6 @@ module.exports = {
   loginVendor,
   getVendorProfile,
   nearbySellers,
+  addToCart,
   logoutVendor
 }

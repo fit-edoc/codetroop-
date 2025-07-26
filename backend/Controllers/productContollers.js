@@ -1,4 +1,5 @@
-const Product = require("../models/productModel");
+const Product = require("../models/productSchema");
+const Seller = require("../models/sellerSchema");
 
 const addProduct = async (req, res, next) => {
   const { name, price, stock, description, hygieneCertified } = req.body;
@@ -7,7 +8,7 @@ const addProduct = async (req, res, next) => {
     const product = await Product.create({
       name,
       pricePerUnit: price,
-      stock: stock, // Assuming stock is managed separately
+      stock: stock,
       supplier: sellerId,
       description,
       hygieneCertified,
@@ -33,4 +34,28 @@ const getAllProducts = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+const getProductById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id).populate("supplier", "username email");
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json({
+      message: "Product fetched successfully",
+      product,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+module.exports = {
+  addProduct,
+  getAllProducts,
+  getProductById
 };
