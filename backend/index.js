@@ -25,10 +25,12 @@ app.use(cookieParser());
 // importing routers
 const vendorRoutes = require("./routes/vendorRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 // using routers
 app.use("/api/vendor", vendorRoutes);
 app.use("/api/seller", sellerRoutes);
+app.use("/api/product", productRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
