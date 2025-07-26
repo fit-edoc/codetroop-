@@ -38,7 +38,10 @@ const vendorSchema = new mongoose.Schema(
       required: true,
     },
 
-    address: AddressSchema,
+    address: {
+      type: AddressSchema,
+      required: true,
+    },
     
     cart: [CartItemSchema]
   },
@@ -58,6 +61,7 @@ vendorSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+// console.log(process.env.JWT_SECRET_KEY),
 vendorSchema.methods.generateJWT = function () {
   return jwt.sign(
     {
