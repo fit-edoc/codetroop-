@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerVendor, loginVendor, getVendorProfile, nearbySellers, addToCart, getVendorCart, logoutVendor } = require("../Controllers/vendorControllers");
+const { registerVendor, loginVendor, getVendorProfile, nearbySellers, addToCart, removeFromCart, reduceCartItemQuantityByOne, increaseCartItemQuantityByOne, getVendorCart, logoutVendor } = require("../Controllers/vendorControllers");
 const { isVendorAuthenticated } = require("../middlewares/authMiddleware");
 
 // Route to register a new vendor
@@ -17,6 +17,15 @@ router.get("/nearby-sellers", isVendorAuthenticated, nearbySellers);
 
 // Route to add a product to the vendor's cart
 router.post("/cart/add", isVendorAuthenticated, addToCart);
+
+// Route to remove a product from the vendor's cart
+router.delete("/cart/remove/:productId", isVendorAuthenticated, removeFromCart);
+
+// Route to reduce the quantity of a cart item by one
+router.post("/cart/reduce/:productId", isVendorAuthenticated, reduceCartItemQuantityByOne);
+
+// Route to increase the quantity of a cart item by one
+router.post("/cart/increase/:productId", isVendorAuthenticated, increaseCartItemQuantityByOne);
 
 // Route to get the vendor's cart
 router.get("/cart", isVendorAuthenticated, getVendorCart);

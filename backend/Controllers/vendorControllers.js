@@ -138,6 +138,93 @@ const addToCart = async (req, res) => {
   }
 };  
 
+const removeFromCart = async (req, res) => {
+  const { productId } = req.params;
+  if (!productId) {
+    return res.status(400).json({ message: "Product ID is required" });
+  }
+  try {
+    const vendor = req.vendor;
+    if (!vendor) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const cart = vendor.cart || [];
+    const updatedCart = cart.filter(item => item.productId.toString() !== productId);
+    vendor.cart = updatedCart;
+    await vendor.save();
+
+    return res.status(200).json({
+      message: "Product removed from cart successfully",
+      productId,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to remove product from cart" });
+  }
+}
+
+const reduceCartItemQuantityByOne = async (req, res) => {
+  const { productId } = req.params;
+  if (!productId) {
+    return res.status(400).json({ message: "Product ID is required" });
+  }
+  try {
+    const vendor = req.vendor;
+    if (!vendor) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const cart = vendor.cart || [];
+    const item = cart.find(item => item.productId.toString() === productId);
+    if (item) {
+      if (item.quantity > 1) {
+        item.quantity -= 1;
+      } else {
+        return res.status(400).json({ message: "Cannot reduce quantity below 1" });
+      }
+      await vendor.save();
+      return res.status(200).json({
+        message: "Cart item quantity reduced successfully",
+        productId,
+        quantity: item.quantity,
+      });
+    } else {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to reduce cart item quantity" });
+  }
+}
+
+const increaseCartItemQuantityByOne = async (req, res) => {
+  const { productId } = req.params;
+  if (!productId) {
+    return res.status(400).json({ message: "Product ID is required" });
+  }
+  try {
+    const vendor = req.vendor;
+    if (!vendor) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const cart = vendor.cart || [];
+    const item = cart.find(item => item.productId.toString() === productId);
+    if (item) {
+      item.quantity += 1;
+      await vendor.save();
+      return res.status(200).json({
+        message: "Cart item quantity increased successfully",
+        productId,
+        quantity: item.quantity,
+      });
+    } else {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to increase cart item quantity" });
+  }
+}
+
 const getVendorCart = async (req, res) => {
   try {
     const vendor = req.vendor;
@@ -174,6 +261,9 @@ module.exports = {
   getVendorProfile,
   nearbySellers,
   addToCart,
+  removeFromCart,
+  reduceCartItemQuantityByOne,
+  increaseCartItemQuantityByOne,
   getVendorCart,
   logoutVendor
 }
