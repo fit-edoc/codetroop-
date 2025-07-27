@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerVendor, loginVendor, getVendorProfile, nearbySellers, addToCart, removeFromCart, reduceCartItemQuantityByOne, increaseCartItemQuantityByOne, getVendorCart, logoutVendor } = require("../Controllers/vendorControllers");
+const { registerVendor, loginVendor, getVendorProfile, getSellerProducts, nearbySellers, addToCart, removeFromCart, reduceCartItemQuantityByOne, increaseCartItemQuantityByOne, getVendorCart, logoutVendor } = require("../Controllers/vendorControllers");
 const { isVendorAuthenticated } = require("../middlewares/authMiddleware");
 
 // Route to register a new vendor
@@ -11,6 +11,9 @@ router.post("/login", loginVendor);
 
 // Route to get the profile of the logged-in vendor
 router.get("/profile", isVendorAuthenticated, getVendorProfile);
+
+// Route to get products from the seller
+router.get("/seller-products", getSellerProducts);
 
 // Route to get nearby sellers for the logged-in vendor
 router.get("/nearby-sellers", isVendorAuthenticated, nearbySellers);

@@ -105,6 +105,25 @@ const nearbySellers = async (req, res) => {
   }
 };
 
+const getSellerProducts = async (req, res) => {
+  const sellerId = req.params.sellerId;
+  if (!sellerId) {
+    return res.status(400).json({ message: "Seller ID is required" });
+  }
+  try {
+    const seller = await Seller.findById(sellerId).populate("products");
+    if (!seller) {
+      return res.status(404).json({ message: "Seller not found" });
+    }
+    return res.status(200).json({
+      message: "Seller products fetched successfully",
+      products: seller.products,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch seller products" });
+  }
+};
+
 const addToCart = async (req, res) => {
   const { productId, quantity } = req.body;
 
@@ -259,6 +278,7 @@ module.exports = {
   registerVendor,
   loginVendor,
   getVendorProfile,
+  getSellerProducts,
   nearbySellers,
   addToCart,
   removeFromCart,
