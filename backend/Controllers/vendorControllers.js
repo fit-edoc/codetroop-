@@ -138,6 +138,23 @@ const addToCart = async (req, res) => {
   }
 };  
 
+const getVendorCart = async (req, res) => {
+  try {
+    const vendor = req.vendor;
+    if (!vendor) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const cart = vendor.cart || [];
+    return res.status(200).json({
+      message: "Cart fetched successfully",
+      cart,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch cart" });
+  }
+}
+
 const logoutVendor = (req, res) => {
   try {
     res.clearCookie("token", {
@@ -157,5 +174,6 @@ module.exports = {
   getVendorProfile,
   nearbySellers,
   addToCart,
+  getVendorCart,
   logoutVendor
 }
