@@ -1,9 +1,0 @@
-{
-  "name": "codetroop",
-  "scripts": {
-    "install:frontend": "cd frontend && npm install",
-    "build:frontend": "cd frontend && npm run build",
-    "start:frontend": "cd frontend && npm run preview",
-    "deploy:frontend": "cd frontend && npx vercel --prod"
-  }
-}
