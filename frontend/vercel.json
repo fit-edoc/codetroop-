@@ -1,5 +1,9 @@
 {
+    "build": {
+        "command": "npm run build",
+        "output": "dist"
+    },
     "rewrites": [
       { "source": "/(.*)", "destination": "/" }
     ]
-  }
+}
